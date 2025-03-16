@@ -1,6 +1,6 @@
 Vue.component('create-task', {
     template: `
-    <form>
+    <form class="task-form" @submit.prevent="createTask">
         <p>Создание заметки</p>
         <input id="title" type="text" v-model="title" placeholder="Название задачи">
         <div class="create-task">
@@ -116,9 +116,9 @@ let app = new Vue({
     },
 
     watch: {
-        columns: {
+        tasks: {
             handler(value) {
-                localStorage.columns = JSON.stringify(value)
+                localStorage.tasks = JSON.stringify(value)
             },
             deep: true
         }
