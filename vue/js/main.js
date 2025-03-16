@@ -2,15 +2,18 @@ Vue.component('create-task', {
     template: `
     <form>
         <p>Создание заметки</p>
-        <input id="title" type="text" placeholder="Название задачи">
+        <input id="title" type="text" v-model="title" placeholder="Название задачи">
         <div class="create-task">
             <div class="create-task__form">
                 <p>Пункты списка</p>
-                <button type="button">
+                <button type="button" 
+                    v-if="subtasks.length < 5" 
+                    @click="subtasks.push({ title: '', completed: false })"
+                >
                     Добавить
                 </button>
             </div>
-            <input type="text" placeholder="Название пункта">
+            <input v-for="(subtask, i) in subtasks" v-model="subtask.title" type="text" placeholder="Название пункта">
         </div>
         <button>Создать заметку</button>
     </form>
@@ -121,12 +124,6 @@ let app = new Vue({
         }
     },
     mounted() {
-        this.columns = JSON.parse(localStorage.columns ?? JSON.stringify(
-            {
-                columnOne: [],
-                columnTwo: [],
-                columnThree: [],
-            }
-        ))
+        this.tasks = JSON.parse(localStorage.tasks ?? '[]')
     }
 })
