@@ -60,17 +60,55 @@ let app = new Vue({
             return [
                 {
                     title: 'Новые',
+                    tasks: this.filteredColumn(this.tasks, 0, 50)
                 },
                 {
                     title: 'В процессе',
+                    tasks: this.filteredColumn(this.tasks, 51, 99)
                 },
                 {
                     title: 'Завершенные',
+                    tasks: this.filteredColumn(this.tasks, 100, 100)
                 },
             ]
         },
         uniqueId() {
             return this.tasks.length + 1
+        }
+    },
+
+    methods: {
+        filteredColumn(tasks, min, max) {
+            return tasks.filter((task) => {
+                const percentage = this.completedPercentage(task.subtasks)
+                return percentage >= min && percentage <= max
+            })
+        },
+
+        completedPercentage(subtasks) {
+            return 100 * (subtasks.reduce((acc, subtasks) => acc + +subtasks.completed, 0) / (subtasks.length || 1))
+        },
+
+        onCompletedPercentage(subtasks) {
+            if (this.completedPercentage(task.subtasks) === 100) {
+                task.finishedAt = new Date()
+            }
+        },
+
+        formattedDate(str) {
+            return new Intl.DateTimeFormat('ru-RU', {
+                year: '2-digit',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+            }).format(new Date(str))
+        },
+        columnDisabled(columnIndex) {
+            switch (columnIndex) {
+                case 0: return this.column[1].tasks.length >= 5
+                case 2: return columnIndex === 2
+            }
         }
     },
 
@@ -82,13 +120,13 @@ let app = new Vue({
             deep: true
         }
     },
-    // mounted() {
-    //     this.columns = JSON.parse(localStorage.columns ?? JSON.stringify(
-    //         {
-    //             columnOne: [],
-    //             columnTwo: [],
-    //             columnThree: [],
-    //         }
-    //     ))
-    // }
+    mounted() {
+        this.columns = JSON.parse(localStorage.columns ?? JSON.stringify(
+            {
+                columnOne: [],
+                columnTwo: [],
+                columnThree: [],
+            }
+        ))
+    }
 })
