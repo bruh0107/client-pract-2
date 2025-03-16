@@ -1,51 +1,76 @@
+Vue.component('create-task', {
+    template: `
+    <form>
+        <p>Создание заметки</p>
+        <input id="title" type="text" placeholder="Название задачи">
+        <div class="create-task">
+            <div class="create-task__form">
+                <p>Пункты списка</p>
+                <button type="button">
+                    Добавить
+                </button>
+            </div>
+            <input type="text" placeholder="Название пункта">
+        </div>
+        <button>Создать заметку</button>
+    </form>
+    `,
+    props: {
+        uniqueId: {
+            type: Number,
+            required: true,
+        }
+    },
+    data(){
+        return {
+            title: '',
+            subtasks: []
+        }
+    },
+    computed: {
+        canCreate() {
+            return this.title.length && this.subtasks.length >= 3 && this.subtasks.length <= 5
+        }
+    },
+    methods: {
+        createTask() {
+            this.$emit('create-task', {
+                id: this.uniqueId,
+                title: this.title,
+                subtasks: this.subtasks,
+                finishedAt: null
+            })
+
+            this.title = ''
+            this.subtasks = []
+        }
+    }
+})
+
 let app = new Vue({
     el: '#app',
-
     data() {
         return {
-            columns: {
-                columnOne: [
-                    {
-                        title: 'Не писять',
-                        tasks: ['Писять', 'Писять', 'Писять'],
-                    },
-                    {
-                        title: 'Приготовить',
-                        tasks: ['Спагетти', 'Сосиски', 'Не готовить'],
-                    }
-                ],
-                columnTwo: [
-                    {
-                        title: 'Приготовить',
-                        tasks: ['Спагетти', 'Сосиски', 'Не готовить'],
-                    }
-                ],
-                columnThree: [
-                    {
-                        title: 'Приготовить',
-                        tasks: ['Спагетти', 'Сосиски', 'Не готовить'],
-                    },
-                    {
-                        title: 'Приготовить',
-                        tasks: ['Спагетти', 'Сосиски', 'Не готовить'],
-                    },
-                    {
-                        title: 'Приготовить',
-                        tasks: ['Спагетти', 'Сосиски', 'Не готовить'],
-                    }
-                ],
-            }
+            tasks: []
         }
     },
 
-    methods: {
-        addTask() {
-            this.columns.columnOne.push(
+    computed: {
+        columns() {
+            return [
                 {
-                    title: 'Не писять',
-                    tasks: ['hjg', 'ljhj', 'kjh']
-                }
-            )
+                    title: 'Новые',
+                },
+                {
+                    title: 'В процессе',
+                },
+                {
+                    title: 'Завершенные',
+                },
+            ]
+        },
+        uniqueId() {
+            return this.tasks.length + 1
         }
     },
 
@@ -57,14 +82,13 @@ let app = new Vue({
             deep: true
         }
     },
-    mounted() {
-        this.columns = JSON.parse(localStorage.columns ?? JSON.stringify(
-            {
-                columnOne: [],
-                columnTwo: [],
-                columnThree: [],
-            }
-        ))
-    }
-// todo залить в гит пж не забудь
+    // mounted() {
+    //     this.columns = JSON.parse(localStorage.columns ?? JSON.stringify(
+    //         {
+    //             columnOne: [],
+    //             columnTwo: [],
+    //             columnThree: [],
+    //         }
+    //     ))
+    // }
 })
