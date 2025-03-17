@@ -26,15 +26,30 @@
                                         type="checkbox"
                                         :id="`${i} - ${j} - ${k}`"
                                         v-model="subtask.completed"
-                                        @change="onCompleteSubtask"
+                                        @change="onCompleteSubtask(task)"
                                         :disabled="columnDisabled(i) || subtask.completed"
                                 >
                                 {{ subtask.title }}
                             </label>
                         </div>
+                        <p v-if="!!task.finishedAt">Выполнена в: {{ formattedDate(task.finishedAt) }}</p>
+                        <button
+                            class="task__btn"
+                            v-if="i === 2 && !task.needsRework"
+                            @click="reworkTask(task)"
+                        >
+                            Доработать
+                        </button>
+                        <button
+                            class="task__btn"
+                            v-if="i === 3"
+                            @click="completeRework(task)"
+                        >
+                            Завершить доработку
+                        </button>
                     </article>
                     <create-task
-                            unique-id="uniqueId"
+                            :unique-id="uniqueId"
                             v-if="i === 0 && column.tasks.length < 3"
                             @create-task="(task) => tasks.push(task)"
                     ></create-task>

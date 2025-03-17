@@ -16,7 +16,7 @@ body {
 
 .board {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
 }
 
@@ -115,7 +115,7 @@ body {
     gap: 5px;
 }
 
-.create-task__btn {
+.task__btn {
     font-family: "Roboto Thin", sans-serif;
     padding: 4px 12px;
     width: fit-content;
@@ -127,7 +127,7 @@ body {
     transition: 0.1s;
 }
 
-.create-task__btn:disabled {
+.task__btn:disabled {
     background: #e3e3e3;
     border: 2px solid #9f9f9f;
 }

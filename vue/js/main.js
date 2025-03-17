@@ -10,7 +10,7 @@ Vue.component('create-task', {
                 <div class="create-task__form">
                     <p>Пункты списка</p>
                     <button 
-                        class="create-task__btn"
+                        class="task__btn"
                         type="button" 
                         v-if="subtasks.length < 5" 
                         @click="subtasks.push({ title: '', completed: false })"
@@ -21,7 +21,7 @@ Vue.component('create-task', {
                 <input class="task-form__input" v-for="(subtask, i) in subtasks" v-model="subtask.title" type="text" placeholder="Название пункта">
             </div>
         </div>
-        <button class="create-task__btn" :disabled="!canCreate">Создать заметку</button>
+        <button class="task__btn" :disabled="!canCreate">Создать заметку</button>
     </form>
     `,
     props: {
@@ -79,6 +79,10 @@ let app = new Vue({
                     title: 'Завершенные',
                     tasks: this.filteredColumn(this.tasks, 100, 100)
                 },
+                {
+                    title: 'На доработку',
+                    tasks: this.tasks.filter(task => task.needsRework)
+                }
             ]
         },
         uniqueId() {
@@ -113,11 +117,24 @@ let app = new Vue({
                 minute: '2-digit',
             }).format(new Date(str))
         },
+
         columnDisabled(columnIndex) {
             switch (columnIndex) {
                 case 0: return this.columns[1].tasks.length >= 5
                 case 2: return columnIndex === 2
             }
+        },
+
+        reworkTask(task) {
+            task.needsRework = true
+            task.subtasks.forEach(subtask => subtask.completed = false)
+        },
+
+        completeRework(task) {
+            task.needsRework = false
+            task.title = prompt('Переименуйте задачу: ', task.title) || task.title
+            this.tasks.splice(this.tasks.indexOf(task), 1)
+            this.tasks.unshift(task)
         }
     },
 
