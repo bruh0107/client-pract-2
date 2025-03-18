@@ -85,6 +85,24 @@ let app = new Vue({
                 }
             ]
         },
+        queuedColumns() {
+            const queuedColumns = [];
+            this.columns.forEach((column, i) => {
+                if (i !== 1) {
+                    queuedColumns.push(column);
+                    return;
+                }
+
+                const queuedTasks = column.tasks.reduce((acc, task, j) => {
+                    if (j < 5) acc.push(task);
+                    else queuedColumns[0].tasks.push(task);
+                    return acc;
+                }, [])
+
+                queuedColumns.push({ title: column.title, tasks: queuedTasks })
+            })
+            return queuedColumns;
+        },
         uniqueId() {
             return this.tasks.length + 1
         }
@@ -120,7 +138,6 @@ let app = new Vue({
 
         columnDisabled(columnIndex) {
             switch (columnIndex) {
-                case 0: return this.columns[1].tasks.length >= 5
                 case 2: return columnIndex === 2
             }
         },

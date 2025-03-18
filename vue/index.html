@@ -15,7 +15,7 @@
     <div class="container">
         <h1 class="title">Заметки.ру</h1>
         <section class="board">
-            <div class="board-column" v-for="(column, i) in columns" :key="i">
+            <div class="board-column" v-for="(column, i) in queuedColumns" :key="i">
                 <h2 class="column-title">{{ column.title }}</h2>
                 <div class="task-wrapper">
                     <article class="task" v-for="(task, j) in column.tasks" :key="`${i} - ${task.id}`">
@@ -50,7 +50,7 @@
                     </article>
                     <create-task
                             :unique-id="uniqueId"
-                            v-if="i === 0 && column.tasks.length < 3"
+                            v-if="i === 0 && column.tasks.length < 3 && queuedColumns[1].tasks.length < 5"
                             @create-task="(task) => tasks.push(task)"
                     ></create-task>
                 </div>
